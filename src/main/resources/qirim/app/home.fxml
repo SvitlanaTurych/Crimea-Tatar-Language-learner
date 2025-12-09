@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="qirim.app.controllers.HomeController"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="home.css"
+            styleClass="root-background">
+
+    <right>
+        <VBox fx:id="rightPanel" alignment="TOP_CENTER" spacing="20"
+              styleClass="right-panel">
+            <ImageView fx:id="userAvatar" fitWidth="90" fitHeight="90"
+                       styleClass="user-avatar"/>
+            <Label fx:id="userNameLabel" text="Merhaba, Aylin!"
+                   styleClass="username-label"/>
+
+            <VBox spacing="8" alignment="CENTER">
+                <Label fx:id="streakLabel" text="🔥 7 днів" styleClass="streak-label"/>
+                <Label text="Прогрес:" styleClass="progress-text"/>
+                <ProgressBar fx:id="progressBar" progress="0.45" prefWidth="160"/>
+            </VBox>
+
+            <Label text="🏆 Лідери" styleClass="leaderboard-title"/>
+            <TableView fx:id="leaderboard" prefHeight="300" prefWidth="220">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Ім’я" prefWidth="120"/>
+                    <TableColumn fx:id="scoreColumn" text="Бали" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+            <Button text="Вийти" onAction="#handleLogout" styleClass="logout-button"/>
+        </VBox>
+    </right>
+
+    <center>
+        <VBox fx:id="centerArea" alignment="TOP_CENTER" spacing="20">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="prevTopicButton" text="⬅" onAction="#handlePreviousTopic" styleClass="next-topic-button"/>
+                <Label fx:id="topicLabel" text="Тема 1" styleClass="topic-title"/>
+                <Button fx:id="nextTopicButton" text="➡" onAction="#handleNextTopic"
+                        styleClass="next-topic-button"/>
+            </HBox>
+
+            <VBox fx:id="lessonsList" alignment="TOP_CENTER" spacing="15">
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

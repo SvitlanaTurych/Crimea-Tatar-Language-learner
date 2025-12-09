@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="400" prefWidth="600" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.LoginController">
+    <Label fx:id="messageLabel" text="" StackPane.alignment="TOP_CENTER" style="-fx-text-fill: #E60000; -fx-padding: 10;" />
+
+    <VBox fx:id="registerForm" layoutX="135.0" layoutY="100.0" prefHeight="200.0" prefWidth="330.0" style="-fx-spacing: 10; -fx-alignment: center;" visible="false">
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Реєстрація" />
+        <TextField fx:id="registerUsernameField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Ім'я користувача" />
+        <PasswordField fx:id="registerPasswordField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Пароль" />
+        <TextField fx:id="registerEmailField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Email" />
+
+        <Button onAction="#handleRegister" text="Зареєструватися" />
+
+        <Hyperlink onAction="#openLogin" text="Вже маєш акаунт? Увійти" />
+    </VBox>
+
+    <!-- ФОРМА ВХОДУ -->
+    <VBox fx:id="loginForm" layoutX="135.0" layoutY="100.0" prefHeight="200.0" prefWidth="330.0" style="-fx-spacing: 10; -fx-alignment: center;" visible="true">
+        <padding>
+            <Insets bottom="20" left="20" right="20" top="20" />
+        </padding>
+
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Ласкаво просимо до QIrIm!" />
+
+        <!-- Унікальний fx:id для логін-імені (замість id="usernameField") -->
+        <TextField fx:id="loginUsernameField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Ім'я" />
+
+        <!-- Унікальний fx:id для логін-пароля (замість id="passwordField") -->
+        <PasswordField fx:id="loginPasswordField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Пароль" />
+
+        <Button mnemonicParsing="false" onAction="#handleLogin" text="Увійти" />
+        <Hyperlink onAction="#openRegister" text="Немає акаунта? Зареєструватися" />
+
+    </VBox>
+</StackPane>
