@@ -7,51 +7,79 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="qirim.app.controllers.HomeController"
-            prefWidth="1200" prefHeight="800"
             stylesheets="home.css"
-            styleClass="root-background">
+            styleClass="root-background"
+            prefWidth="1200.0" prefHeight="800.0"
+            minWidth="800.0" minHeight="600.0">
 
+    <!-- 🔸 Права панель -->
     <right>
         <VBox fx:id="rightPanel" alignment="TOP_CENTER" spacing="20"
-              styleClass="right-panel">
+              styleClass="right-panel"
+              minWidth="250" prefWidth="250" maxWidth="250">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
             <ImageView fx:id="userAvatar" fitWidth="90" fitHeight="90"
                        styleClass="user-avatar"/>
             <Label fx:id="userNameLabel" text="Merhaba, Aylin!"
                    styleClass="username-label"/>
 
+            <!-- Прогрес і стрік -->
             <VBox spacing="8" alignment="CENTER">
                 <Label fx:id="streakLabel" text="🔥 7 днів" styleClass="streak-label"/>
                 <Label text="Прогрес:" styleClass="progress-text"/>
                 <ProgressBar fx:id="progressBar" progress="0.45" prefWidth="160"/>
             </VBox>
 
+            <!-- Таблиця лідерів -->
             <Label text="🏆 Лідери" styleClass="leaderboard-title"/>
-            <TableView fx:id="leaderboard" prefHeight="300" prefWidth="220">
+            <TableView fx:id="leaderboard" prefHeight="300" prefWidth="220"
+                       VBox.vgrow="SOMETIMES">
                 <columns>
-                    <TableColumn fx:id="nameColumn" text="Ім’я" prefWidth="120"/>
+                    <TableColumn fx:id="nameColumn" text="Ім'я" prefWidth="120"/>
                     <TableColumn fx:id="scoreColumn" text="Бали" prefWidth="80"/>
                 </columns>
             </TableView>
 
+            <!-- Кнопка виходу -->
             <Button text="Вийти" onAction="#handleLogout" styleClass="logout-button"/>
         </VBox>
     </right>
 
+    <!-- 🔸 Центральна частина — теми та уроки -->
     <center>
-        <VBox fx:id="centerArea" alignment="TOP_CENTER" spacing="20">
+        <VBox fx:id="centerArea" alignment="TOP_CENTER" spacing="20"
+              VBox.vgrow="ALWAYS">
             <padding>
                 <Insets top="40" right="40" bottom="40" left="40"/>
             </padding>
 
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-                <Button fx:id="prevTopicButton" text="⬅" onAction="#handlePreviousTopic" styleClass="next-topic-button"/>
+            <!-- Верхній рядок: Назва теми + КНОПКИ НАВІГАЦІЇ -->
+            <HBox alignment="CENTER" spacing="20">
+                <!-- Кнопка Назад -->
+                <Button fx:id="prevTopicButton" text="⬅" onAction="#handlePreviousTopic"
+                        styleClass="next-topic-button"/>
+
                 <Label fx:id="topicLabel" text="Тема 1" styleClass="topic-title"/>
+
+                <!-- Кнопка Вперед -->
                 <Button fx:id="nextTopicButton" text="➡" onAction="#handleNextTopic"
                         styleClass="next-topic-button"/>
             </HBox>
 
-            <VBox fx:id="lessonsList" alignment="TOP_CENTER" spacing="15">
-            </VBox>
+            <!-- Список уроків -->
+            <ScrollPane fitToWidth="true" fitToHeight="true"
+                        VBox.vgrow="ALWAYS"
+                        styleClass="lessons-scroll">
+                <VBox fx:id="lessonsList" alignment="TOP_CENTER" spacing="15">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <!-- Динамічні кнопки будуть додані HomeController.java -->
+                </VBox>
+            </ScrollPane>
         </VBox>
     </center>
 

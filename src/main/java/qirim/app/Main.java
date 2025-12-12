@@ -22,7 +22,7 @@ public class Main extends Application {
         primaryStage.setTitle("QIrIm");
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setFullScreen(true);
+        primaryStage.setMaximized(true);
     }
 
 }

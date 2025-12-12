@@ -1,22 +1,87 @@
-.right-panel {
-    -fx-background-color: #f9f4ef;
-    -fx-padding: 20;
-    -fx-border-color: #d1c3a7;
-    -fx-border-width: 0 0 0 2;
+/* Основний контейнер повинен займати весь простір */
+.root-background {
+    -fx-background-color: #f5f5f5;
+    /* НЕ встановлюйте фіксовані розміри тут! */
 }
 
-.nickname {
-    -fx-font-size: 18px;
+/* Центральна область повинна розтягуватись */
+#centerArea {
+    -fx-min-width: 400;
+    -fx-max-width: Infinity;
+    /* Займає весь доступний простір */
+}
+
+/* ScrollPane для уроків */
+.lessons-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.lessons-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Список уроків повинен розтягуватись */
+#lessonsList {
+    -fx-alignment: TOP_CENTER;
+    -fx-spacing: 15;
+    -fx-max-width: 800;
+    -fx-pref-width: 800;
+}
+
+/* Права панель з фіксованою шириною */
+.right-panel {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 0 1;
+    -fx-min-width: 250;
+    -fx-pref-width: 250;
+    -fx-max-width: 250;
+}
+
+/* Інші стилі... */
+.topic-title {
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
 
-.transparent-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-cursor: hand;
+.next-topic-button {
+    -fx-font-size: 18px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
 }
 
-.transparent-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.15);
-    -fx-background-radius: 50%;
+.logout-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+}
+
+.logout-button:hover {
+    -fx-background-color: #d32f2f;
+}
+
+/* Стилі для кнопок уроків */
+.lesson-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 15 30;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.lesson-button:hover {
+    -fx-background-color: #45a049;
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}
+
+.lesson-button:pressed {
+    -fx-background-color: #3d8b40;
 }

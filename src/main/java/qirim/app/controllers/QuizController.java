@@ -72,9 +72,17 @@ public class QuizController {
         updateNavigationButtons();
     }
 
+    private int themeIndex = 0; // Додайте це поле
+
     public void setUserId(int userId) {
         this.userId = userId;
         logger.info("UserId встановлено: " + userId);
+    }
+
+    // Додайте новий метод
+    public void setThemeIndex(int themeIndex) {
+        this.themeIndex = themeIndex;
+        logger.info("ThemeIndex встановлено: " + themeIndex);
     }
 
     @FXML
@@ -251,6 +259,16 @@ public class QuizController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/qirim/app/home.fxml"));
             Parent root = loader.load();
+
+            HomeController homeController = loader.getController();
+
+            if (userId > 0) {
+                homeController.setCurrentUserId(userId);
+                homeController.setCurrentThemeIndex(themeIndex); // Встановлюємо тему
+                logger.info("Повернення на головну: userId=" + userId + ", themeIndex=" + themeIndex);
+            } else {
+                logger.warning("userId не встановлено в QuizController!");
+            }
 
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

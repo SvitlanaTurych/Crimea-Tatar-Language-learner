@@ -38,7 +38,6 @@ public class HomeController {
     @FXML private Button prevTopicButton;
     @FXML private Button nextTopicButton;
 
-    // Елементи правої панелі для прогресу та лідерів
     @FXML private Label userNameLabel;
     @FXML private Label streakLabel;
     @FXML private ProgressBar progressBar;
@@ -48,8 +47,16 @@ public class HomeController {
 
     private ObservableList<Node> originalCenterChildren;
 
-    // ID поточного користувача (отримується при вході)
-    private int currentUserId = 1; // TODO: Отримувати з сесії після логіну
+    private int currentUserId;
+
+    public void setCurrentThemeIndex(int themeIndex) {
+        this.currentThemeIndex = themeIndex;
+        logger.info("CurrentThemeIndex встановлено: " + themeIndex);
+
+        if (!themesList.isEmpty() && themeIndex >= 0 && themeIndex < themesList.size()) {
+            updateCenterContent(themeIndex);
+        }
+    }
 
     private static class Lesson {
         int lessonId;
@@ -100,20 +107,16 @@ public class HomeController {
             nextTopicButton.setDisable(true);
         }
 
-        // Завантаження даних користувача (якщо елементи є в FXML)
         if (userNameLabel != null || streakLabel != null || progressBar != null) {
             loadUserData();
         }
     }
 
     private void setupLeaderboard() {
-        // PropertyValueFactory шукає методи getUsername() та getTotalScore()
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("totalScore"));
 
-        // Встановлюємо стиль для таблиці
         leaderboard.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
         loadLeaderboardData();
     }
 
@@ -130,19 +133,16 @@ public class HomeController {
 
     private void loadUserData() {
         try {
-            // Завантаження імені користувача
             if (userNameLabel != null) {
                 String username = getUsernameById(currentUserId);
                 userNameLabel.setText("Merhaba, " + username + "!");
             }
 
-            // Завантаження streak
             if (streakLabel != null) {
                 UserProgressService.UserStats stats = UserProgressService.getUserStats(currentUserId);
                 streakLabel.setText("🔥 " + stats.currentStreak + " днів");
             }
 
-            // Завантаження прогресу
             if (progressBar != null) {
                 UserProgress progress = UserProgressService.getUserProgress(currentUserId);
                 progressBar.setProgress(progress.getProgressDecimal());
@@ -177,10 +177,21 @@ public class HomeController {
 
     public void setCurrentUserId(int userId) {
         this.currentUserId = userId;
-        loadUserData();
+        logger.info("HomeController: currentUserId встановлено = " + userId);
+
+        // Перезавантажуємо дані користувача з новим ID
+        if (userNameLabel != null || streakLabel != null || progressBar != null) {
+            loadUserData();
+        }
+
+        // Оновлюємо відображення уроків (показуємо завершені)
+        if (!themesList.isEmpty()) {
+            updateCenterContent(currentThemeIndex);
+        }
     }
 
-    private List<Theme> loadThemesFromDB() {
+
+        private List<Theme> loadThemesFromDB() {
         List<Theme> loadedThemes = new ArrayList<>();
         String themesQuery = "SELECT theme_id, theme_name, theme_number FROM themes ORDER BY theme_number";
 
@@ -275,7 +286,6 @@ public class HomeController {
                 lessonButton.setPrefWidth(250);
                 lessonButton.getStyleClass().add("lesson-button");
 
-                // Перевіряємо, чи урок завершено (якщо UserProgressService доступний)
                 try {
                     boolean completed = UserProgressService.isLessonCompleted(currentUserId, lesson.lessonId);
                     if (completed) {
@@ -297,7 +307,6 @@ public class HomeController {
     public void goBackToTopicList(ActionEvent event) {
         updateCenterContent(currentThemeIndex);
 
-        // Оновлюємо дані після повернення
         if (userNameLabel != null || streakLabel != null || progressBar != null) {
             loadUserData();
         }
@@ -319,21 +328,23 @@ public class HomeController {
 
             QuizController quizController = loader.getController();
             quizController.setLessonData(lessonId);
-            quizController.setUserId(currentUserId); // Передаємо ID користувача
+            quizController.setUserId(currentUserId);
+            quizController.setThemeIndex(currentThemeIndex); // ДОДАНО
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setFullScreen(true);
+            stage.setMaximized(true);
             stage.show();
 
-            logger.info("Користувач перейшов до тесту: " + selectedLesson.title + " (Lesson ID: " + lessonId + ")");
+            logger.info("Користувач перейшов до тесту: " + selectedLesson.title +
+                    " (Lesson ID: " + lessonId + ", Theme: " + currentThemeIndex + ")");
 
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Помилка завантаження quiz.fxml", e);
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setTitle("Помилка завантаження");
             errorAlert.setHeaderText(null);
-            errorAlert.setContentText("Не вдалося завантажити інтерфейс тесту. Перевірте, чи існує файл quiz.fxml.");
+            errorAlert.setContentText("Не вдалося завантажити інтерфейс тесту.");
             errorAlert.showAndWait();
         }
     }
@@ -344,7 +355,7 @@ public class HomeController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
             stage.show();
-            stage.setFullScreen(true);
+            stage.setMaximized(true);
             stage.setScene(new Scene(root));
 
             logger.info("Користувач вийшов із системи");
