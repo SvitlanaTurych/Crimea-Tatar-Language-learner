@@ -13,9 +13,6 @@ public class UserProgressService {
 
     private static final Logger logger = Logger.getLogger(UserProgressService.class.getName());
 
-    /**
-     * Зберігає результат проходження тесту та оновлює прогрес користувача
-     */
     public static boolean saveTestResult(int userId, int lessonId, int score, int totalQuestions) {
         String sql = "SELECT update_user_progress(?, ?, ?, ?)";
 
@@ -37,9 +34,6 @@ public class UserProgressService {
         }
     }
 
-    /**
-     * Отримує загальний прогрес користувача
-     */
     public static UserProgress getUserProgress(int userId) {
         String sql = "SELECT * FROM get_user_progress(?)";
 
@@ -64,9 +58,6 @@ public class UserProgressService {
         return new UserProgress(0, 0, 0.0);
     }
 
-    /**
-     * Отримує статистику користувача (бали, streak тощо)
-     */
     public static UserStats getUserStats(int userId) {
         String sql = "SELECT COALESCE(us.total_score, 0) as total_score, " +
                 "COALESCE(us.lessons_completed, 0) as lessons_completed, " +
@@ -96,9 +87,6 @@ public class UserProgressService {
         return new UserStats(0, 0, 0, 0);
     }
 
-    /**
-     * Отримує таблицю лідерів (топ користувачів)
-     */
     public static List<LeaderboardEntry> getLeaderboard(int limit) {
         List<LeaderboardEntry> leaderboard = new ArrayList<>();
         String sql = "SELECT username, total_score, lessons_completed, current_streak " +
@@ -130,9 +118,6 @@ public class UserProgressService {
         return leaderboard;
     }
 
-    /**
-     * Перевіряє, чи урок завершено користувачем
-     */
     public static boolean isLessonCompleted(int userId, int lessonId) {
         String sql = "SELECT completed FROM user_lesson_progress " +
                 "WHERE user_id = ? AND lesson_id = ?";
@@ -155,9 +140,6 @@ public class UserProgressService {
         return false;
     }
 
-    /**
-     * Отримує кращий результат користувача для уроку
-     */
     public static int getBestScore(int userId, int lessonId) {
         String sql = "SELECT score FROM user_lesson_progress " +
                 "WHERE user_id = ? AND lesson_id = ?";
@@ -180,7 +162,6 @@ public class UserProgressService {
         return 0;
     }
 
-    // Внутрішній клас для статистики користувача
     public static class UserStats {
         public final int totalScore;
         public final int lessonsCompleted;

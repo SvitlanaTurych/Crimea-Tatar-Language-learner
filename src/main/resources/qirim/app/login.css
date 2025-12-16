@@ -1,0 +1,91 @@
+.root {
+    -fx-background-color: #043184;
+}
+
+.text-field, .password-field {
+    -fx-background-color: transparent;
+    -fx-border-color: #5A7FB8;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.5);
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-gap-start-and-end: 10px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #D4AF78;
+    -fx-effect: dropshadow(gaussian, rgba(212, 175, 120, 0.4), 10, 0, 0, 0);
+}
+
+.button {
+    -fx-background-color: #E1CBA2;
+    -fx-text-fill: #043184;
+    -fx-font-size: 18px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 12 40;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-background-color: #E1CBA2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 8, 0, 0, 3);
+}
+
+.button:pressed {
+    -fx-background-color: #C39A67;
+    -fx-translate-y: 1;
+}
+
+.hyperlink {
+    -fx-text-fill: #D4AF78;
+    -fx-font-size: 14px;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #E5C089;
+    -fx-underline: true;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #D4AF78;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+
+.title-label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #D4AF78;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.form-container {
+    -fx-background-color: #043184;
+    -fx-background-radius: 25;
+    -fx-padding: 77 138 77 138;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0, 0, 5);
+}
+
+.error-label {
+    -fx-text-fill: #FF4444;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: rgba(255, 68, 68, 0.1);
+    -fx-background-radius: 5;
+}
+
+.success-label {
+    -fx-text-fill: #4CAF50;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: rgba(76, 175, 80, 0.1);
+    -fx-background-radius: 5;
+}

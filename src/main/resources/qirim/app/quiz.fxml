@@ -3,63 +3,96 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.QuizController">
+<StackPane prefHeight="872" prefWidth="1329" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.QuizController">
 
-    <!-- 🔸 Центр: Запитання, Варіанти та Результати -->
-    <center>
-        <VBox alignment="CENTER" spacing="20.0" style="-fx-padding: 40px;">
+    <!-- Фоновий візерунок -->
+    <ImageView fitHeight="1080" fitWidth="1920" pickOnBounds="true" preserveRatio="false">
+            <Image url="@images/crimean-pattern-background.png" />
+    </ImageView>
 
-            <!-- Панель у верхній частині центру для навігації та рахунку -->
-            <HBox alignment="CENTER_LEFT" spacing="20.0" maxWidth="700.0">
-                <!-- Кнопка "Назад" (завжди видима) -->
-                <Button mnemonicParsing="false" onAction="#goBackToHome"
-                        style="-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-weight: bold; -fx-cursor: hand;"
-                        text="← Назад до тем" />
-                <Region HBox.hgrow="ALWAYS" />
-                <!-- Мітка для відображення поточного рахунку -->
-                <Label fx:id="scoreLabel" text="Бали: 0 / 5" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+    <!-- Основний контейнер з темно-синім фоном -->
+    <VBox alignment="CENTER" maxHeight="700.0" maxWidth="900.0" prefHeight="800.0" prefWidth="1600.0" style="-fx-background-color: #041F54">
+
+        <!-- Верхня панель: Назад + Бали -->
+        <HBox alignment="CENTER" prefHeight="91.0" prefWidth="1842.0" spacing="500" style="-fx-padding: 30 50 20 50;">
+            <Button onAction="#goBackToHome" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18px; -fx-cursor: hand; -fx-underline: false; -fx-border-width: 0;" text="← Назад до тем">
+                <font>
+                    <javafx.scene.text.Font name="System" size="18.0" />
+                </font>
+            </Button>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Label fx:id="scoreLabel" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="Бали: 0/2" />
+        </HBox>
+
+        <!-- Роздільна лінія -->
+        <Separator prefWidth="1626" style="-fx-background-color: rgba(255, 255, 255, 0.3);">
+            <VBox.margin>
+                <Insets bottom="30" />
+            </VBox.margin>
+        </Separator>
+
+        <!-- Контейнер запитання -->
+        <VBox alignment="CENTER" spacing="40" style="-fx-padding: 20 100 50 100;" VBox.vgrow="ALWAYS">
+
+            <!-- Заголовок: Запитання 1 з 2 -->
+            <Label fx:id="questionNumberLabel" style="-fx-text-fill: #D4AF78; -fx-font-size: 24px; -fx-font-weight: bold;" text="Запитання 1 з 2" />
+
+            <!-- Текст запитання -->
+            <Label fx:id="questionLabel" alignment="CENTER" maxWidth="800" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-padding: 30; -fx-border-color: rgba(255, 255, 255, 0.3); -fx-border-width: 0 0 2 0;" text="Скільки голосних звуків у кримськотатарській мові?" wrapText="true" />
+
+            <!-- Роздільник пунктиром -->
+            <Region prefHeight="20" />
+
+            <!-- Варіанти відповідей (2x2 сітка) -->
+            <GridPane fx:id="optionsGrid" alignment="CENTER" hgap="30" maxWidth="900" vgap="20">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="400" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="400" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+
+                <!-- Варіанти будуть додані динамічно з контролера -->
+                <!-- Приклад кнопок: -->
+                <Button prefHeight="60" prefWidth="400" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-font-size: 18px; -fx-cursor: hand;" text="5" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+                <Button prefHeight="60" prefWidth="400" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-font-size: 18px; -fx-cursor: hand;" text="7" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Button prefHeight="60" prefWidth="400" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-font-size: 18px; -fx-cursor: hand;" text="23" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                <Button prefHeight="60" prefWidth="400" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-font-size: 18px; -fx-cursor: hand;" text="12" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            </GridPane>
+
+            <!-- Кнопки навігації -->
+            <HBox fx:id="navigationHBox" alignment="CENTER" spacing="30" style="-fx-padding: 30 0 0 0;">
+                <Button fx:id="prevButton" onAction="#handlePreviousQuestion" prefHeight="50" prefWidth="200" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-font-size: 16px; -fx-cursor: hand;" text="Попереднє" />
+
+                <Button fx:id="nextButton" onAction="#handleNextQuestion" prefHeight="50" prefWidth="200" style="-fx-background-color: #D4AF78; -fx-text-fill: #043184; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="Наступне" />
             </HBox>
 
-            <!-- Мітка результату (прихована до кінця тесту) -->
-            <Label fx:id="resultMessageLabel"
-                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #28a745; -fx-alignment: center; -fx-padding: 20px; -fx-background-color: #d4edda; -fx-border-color: #c3e6cb; -fx-border-radius: 8px; -fx-background-radius: 8px;"
-                   text="Тест завершено!"
-                   visible="false"
-                   wrapText="true"
-                   maxWidth="700.0" />
+            <!-- Повідомлення про результат (приховане за замовчуванням) -->
+            <Label fx:id="resultMessageLabel" style="-fx-text-fill: #4CAF50; -fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 20; -fx-background-color: rgba(76, 175, 80, 0.2); -fx-border-color: #4CAF50; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;" text="Тест завершено!" visible="false" />
 
-            <!-- Панель з питанням -->
-            <VBox alignment="CENTER" maxWidth="700.0" style="-fx-border-color: #007bff; -fx-border-width: 2px; -fx-padding: 25px; -fx-background-color: white; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
-                <Label fx:id="questionLabel" alignment="CENTER" text="Текст запитання буде тут." wrapText="true" maxWidth="650.0">
-                    <font>
-                        <Font name="System Bold" size="18.0" />
-                    </font>
-                </Label>
-            </VBox>
-
-            <!-- Контейнер для кнопок відповідей (заповнюється динамічно) -->
-            <VBox fx:id="optionsContainer" alignment="CENTER" spacing="12.0" maxWidth="700.0" style="-fx-padding: 10px 0 0 0;" />
+            <!-- Кнопка повернення після завершення -->
+            <Button fx:id="backToHomeButton" onAction="#goBackToHome" prefHeight="50" prefWidth="250" style="-fx-background-color: #D4AF78; -fx-text-fill: #043184; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="Повернутися до тем" visible="false" />
         </VBox>
-    </center>
 
-    <!-- 🔸 Низ: Навігація та Кнопка Додому (дублювання для кінцевого екрана) -->
-    <bottom>
-        <VBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20px 0 40px 0;">
-            <!-- Кнопка "Назад до дому" (дублювання, visible=false) -->
-            <Button fx:id="backToHomeButton" mnemonicParsing="false" onAction="#goBackToHome"
-                    style="-fx-font-size: 16px; -fx-background-color: #007bff; -fx-text-fill: white; -fx-padding: 12 35; -fx-cursor: hand; -fx-background-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);"
-                    text="Повернутися до тем" visible="false" />
+    </VBox>
 
-            <!-- Панель навігації між запитаннями -->
-            <HBox fx:id="navigationHBox" alignment="CENTER" spacing="20.0">
-                <Button fx:id="prevButton" mnemonicParsing="false" onAction="#handlePreviousQuestion" text="← Попереднє"
-                        style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 14px;" />
-                <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNextQuestion" text="Наступне →"
-                        style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 14px;" />
-            </HBox>
-        </VBox>
-    </bottom>
-</BorderPane>
+</StackPane>

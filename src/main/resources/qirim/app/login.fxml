@@ -6,39 +6,90 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane prefHeight="400" prefWidth="600" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.LoginController">
-    <Label fx:id="messageLabel" text="" StackPane.alignment="TOP_CENTER" style="-fx-text-fill: #E60000; -fx-padding: 10;" />
+<StackPane prefHeight="1102" prefWidth="669" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.LoginController">
 
-    <VBox fx:id="registerForm" layoutX="135.0" layoutY="100.0" prefHeight="200.0" prefWidth="330.0" style="-fx-spacing: 10; -fx-alignment: center;" visible="false">
-        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Реєстрація" />
-        <TextField fx:id="registerUsernameField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Ім'я користувача" />
-        <PasswordField fx:id="registerPasswordField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Пароль" />
-        <TextField fx:id="registerEmailField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Email" />
+    <ImageView fitHeight="1080" fitWidth="1920" pickOnBounds="true" preserveRatio="false">
+        <Image url="@images/crimean-pattern-background.png"/>
+    </ImageView>
 
-        <Button onAction="#handleRegister" text="Зареєструватися" />
+        <Label fx:id="messageLabel" text="" StackPane.alignment="TOP_CENTER"
+               style="-fx-text-fill: #FF4444; -fx-font-size: 14px; -fx-padding: 20;" />
 
-        <Hyperlink onAction="#openLogin" text="Вже маєш акаунт? Увійти" />
-    </VBox>
+        <VBox fx:id="registerForm" alignment="CENTER" spacing="15" visible="false" maxWidth="852" maxHeight="500"
+              style="-fx-background-color: #043184; -fx-background-radius: 25; -fx-padding: 50 80 50 80;">
 
-    <!-- ФОРМА ВХОДУ -->
-    <VBox fx:id="loginForm" layoutX="135.0" layoutY="100.0" prefHeight="200.0" prefWidth="330.0" style="-fx-spacing: 10; -fx-alignment: center;" visible="true">
-        <padding>
-            <Insets bottom="20" left="20" right="20" top="20" />
-        </padding>
+            <Label text="Ласкаво просимо до QIrIm"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #D4AF78;">
+                <VBox.margin>
+                    <Insets bottom="20" />
+                </VBox.margin>
+            </Label>
 
-        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Ласкаво просимо до QIrIm!" />
+            <TextField fx:id="registerUsernameField" promptText="Логін"
+                       prefWidth="380" prefHeight="50"
+                       style="-fx-background-color: transparent; -fx-border-color: #5A7FB8; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-prompt-text-fill: #8899BB; -fx-font-size: 16px; -fx-padding: 12;" />
 
-        <!-- Унікальний fx:id для логін-імені (замість id="usernameField") -->
-        <TextField fx:id="loginUsernameField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Ім'я" />
+            <PasswordField fx:id="registerPasswordField" promptText="Пароль"
+                           prefWidth="380" prefHeight="50"
+                           style="-fx-background-color: transparent; -fx-border-color: #5A7FB8; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-prompt-text-fill: #8899BB; -fx-font-size: 16px; -fx-padding: 12;" />
 
-        <!-- Унікальний fx:id для логін-пароля (замість id="passwordField") -->
-        <PasswordField fx:id="loginPasswordField" maxHeight="25.0" maxWidth="400.0" minHeight="25.0" minWidth="400.0" prefHeight="25.0" prefWidth="400.0" promptText="Пароль" />
+            <TextField fx:id="registerEmailField" promptText="Email"
+                       prefWidth="380" prefHeight="50"
+                       style="-fx-background-color: transparent; -fx-border-color: #5A7FB8; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-prompt-text-fill: #8899BB; -fx-font-size: 16px; -fx-padding: 12;">
+                <VBox.margin>
+                    <Insets bottom="10" />
+                </VBox.margin>
+            </TextField>
 
-        <Button mnemonicParsing="false" onAction="#handleLogin" text="Увійти" />
-        <Hyperlink onAction="#openRegister" text="Немає акаунта? Зареєструватися" />
+            <Button text="Зареєструватись" onAction="#handleRegister"
+                    prefWidth="180" prefHeight="50"
+                    style="-fx-background-color: #D4AF78; -fx-text-fill: #043184; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 8;">
+                <VBox.margin>
+                    <Insets top="10" bottom="15" />
+                </VBox.margin>
+            </Button>
 
-    </VBox>
+            <Hyperlink text="Є акаунт? Увійти" onAction="#openLogin"
+                       style="-fx-text-fill: #D4AF78; -fx-font-size: 14px; -fx-underline: false;" />
+        </VBox>
+
+        <VBox fx:id="loginForm" alignment="CENTER" spacing="15" visible="true" maxWidth="852" maxHeight="500"
+              style="-fx-background-color: #043184; -fx-background-radius: 25; -fx-padding: 50 80 50 80;">
+
+            <Label text="Ласкаво просимо до QIrIm"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #D4AF78;">
+                <VBox.margin>
+                    <Insets bottom="20" />
+                </VBox.margin>
+            </Label>
+
+            <TextField fx:id="loginUsernameField" promptText="Логін"
+                       prefWidth="380" prefHeight="50"
+                       style="-fx-background-color: transparent; -fx-border-color: #5A7FB8; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-prompt-text-fill: #8899BB; -fx-font-size: 16px; -fx-padding: 12;" />
+
+            <PasswordField fx:id="loginPasswordField" promptText="Пароль"
+                           prefWidth="380" prefHeight="50"
+                           style="-fx-background-color: transparent; -fx-border-color: #5A7FB8; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: white; -fx-prompt-text-fill: #8899BB; -fx-font-size: 16px; -fx-padding: 12;">
+                <VBox.margin>
+                    <Insets bottom="10" />
+                </VBox.margin>
+            </PasswordField>
+
+            <Button text="Увійти" onAction="#handleLogin"
+                    prefWidth="180" prefHeight="50"
+                    style="-fx-background-color: #D4AF78; -fx-text-fill: #043184; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 8;">
+                <VBox.margin>
+                    <Insets top="10" bottom="15" />
+                </VBox.margin>
+            </Button>
+
+            <Hyperlink text="Немає акаунту? Зареєструватись" onAction="#openRegister"
+                       style="-fx-text-fill: #D4AF78; -fx-font-size: 14px; -fx-underline: false;" />
+        </VBox>
+
 </StackPane>

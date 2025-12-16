@@ -68,7 +68,6 @@ public class LoginController {
             if (rsInsert.next()) {
                 int newUserId = rsInsert.getInt("id");
 
-                // Ініціалізуємо статистику для нового користувача
                 String initStatsQuery = "INSERT INTO user_stats (user_id, total_score, lessons_completed, current_streak, longest_streak) VALUES (?, 0, 0, 0, 0)";
                 PreparedStatement statsStmt = conn.prepareStatement(initStatsQuery);
                 statsStmt.setInt(1, newUserId);

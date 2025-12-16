@@ -1,8 +1,5 @@
 package qirim.app.model;
 
-/**
- * Модель для прогресу користувача
- */
 public class UserProgress {
     private final int totalLessons;
     private final int completedLessons;
@@ -26,9 +23,6 @@ public class UserProgress {
         return progressPercentage;
     }
 
-    /**
-     * Повертає прогрес у вигляді десяткового числа (0.0 - 1.0) для ProgressBar
-     */
     public double getProgressDecimal() {
         return progressPercentage / 100.0;
     }

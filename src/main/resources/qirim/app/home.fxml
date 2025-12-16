@@ -1,86 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="qirim.app.controllers.HomeController"
-            stylesheets="home.css"
-            styleClass="root-background"
-            prefWidth="1200.0" prefHeight="800.0"
-            minWidth="800.0" minHeight="600.0">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-    <!-- 🔸 Права панель -->
-    <right>
-        <VBox fx:id="rightPanel" alignment="TOP_CENTER" spacing="20"
-              styleClass="right-panel"
-              minWidth="250" prefWidth="250" maxWidth="250">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
+<StackPane prefHeight="872" prefWidth="1329" stylesheets="@home.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qirim.app.controllers.HomeController">
 
-            <ImageView fx:id="userAvatar" fitWidth="90" fitHeight="90"
-                       styleClass="user-avatar"/>
-            <Label fx:id="userNameLabel" text="Merhaba, Aylin!"
-                   styleClass="username-label"/>
+    <ImageView fitHeight="1080" fitWidth="1920" pickOnBounds="true" preserveRatio="false">
+            <Image url="@images/crimean-pattern-background.png" />
+    </ImageView>
 
-            <!-- Прогрес і стрік -->
-            <VBox spacing="8" alignment="CENTER">
-                <Label fx:id="streakLabel" text="🔥 7 днів" styleClass="streak-label"/>
-                <Label text="Прогрес:" styleClass="progress-text"/>
-                <ProgressBar fx:id="progressBar" progress="0.45" prefWidth="160"/>
+    <HBox alignment="CENTER" spacing="0">
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <VBox fx:id="centerArea" alignment="TOP_CENTER" maxHeight="700.0" maxWidth="900" minHeight="700.0" minWidth="900" prefHeight="700" prefWidth="900" spacing="25" style="-fx-background-color: #041F54; -fx-padding: 50 40 50 40;">
+
+            <HBox alignment="CENTER" spacing="60">
+                <Button fx:id="prevTopicButton" onAction="#handlePreviousTopic" styleClass="nav-button" text="←" />
+
+                <Label fx:id="topicLabel" styleClass="topic-title" text="Алфавіт і вимова" />
+
+                <Button fx:id="nextTopicButton" onAction="#handleNextTopic" styleClass="nav-button" text="→" />
+            </HBox>
+
+            <Separator prefWidth="450" styleClass="topic-separator">
+                <VBox.margin>
+                    <Insets bottom="15" top="15" />
+                </VBox.margin>
+            </Separator>
+
+            <VBox fx:id="lessonsList" alignment="CENTER" spacing="20" style="-fx-padding: 10;">
             </VBox>
 
-            <!-- Таблиця лідерів -->
-            <Label text="🏆 Лідери" styleClass="leaderboard-title"/>
-            <TableView fx:id="leaderboard" prefHeight="300" prefWidth="220"
-                       VBox.vgrow="SOMETIMES">
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+
+        <VBox fx:id="rightPanel" alignment="TOP_CENTER" maxHeight="700" maxWidth="430" minHeight="700" minWidth="430" prefHeight="700" prefWidth="430" spacing="25" style="-fx-background-color: #E8D4B0; -fx-padding: 50 40 50 40;">
+
+            <Label fx:id="userNameLabel" styleClass="username-label" text="Svitlana" />
+
+            <HBox alignment="CENTER" spacing="12" styleClass="streak-container">
+                <Label style="-fx-font-size: 20px;" text="" />
+                <Label fx:id="streakLabel" styleClass="streak-label" text="2 дні" />
+            </HBox>
+
+<!--                <Label style="-fx-text-fill: #043184; -fx-font-size: 20px;" text="Прогрес"/>-->
+                <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+
+            <HBox alignment="CENTER" spacing="12">
+                <Label style="-fx-font-size: 22px;" text="🏆" />
+                <Label style="-fx-text-fill: #043184; -fx-font-size: 20px; -fx-font-weight: bold;" text="ЛІДЕРИ:" />
+            </HBox>
+
+            <TableView fx:id="leaderboard" prefHeight="250" prefWidth="350" styleClass="leaderboard-table" VBox.vgrow="SOMETIMES">
                 <columns>
-                    <TableColumn fx:id="nameColumn" text="Ім'я" prefWidth="120"/>
-                    <TableColumn fx:id="scoreColumn" text="Бали" prefWidth="80"/>
+                    <TableColumn fx:id="nameColumn" prefWidth="175" text="Ім'я" />
+                    <TableColumn fx:id="scoreColumn" prefWidth="175" text="Рахунок" />
                 </columns>
             </TableView>
 
-            <!-- Кнопка виходу -->
-            <Button text="Вийти" onAction="#handleLogout" styleClass="logout-button"/>
+            <Button onAction="#handleLogout" prefHeight="45" prefWidth="200" styleClass="logout-button" text="Вийти" />
+
+            <Region VBox.vgrow="ALWAYS" />
+
         </VBox>
-    </right>
 
-    <!-- 🔸 Центральна частина — теми та уроки -->
-    <center>
-        <VBox fx:id="centerArea" alignment="TOP_CENTER" spacing="20"
-              VBox.vgrow="ALWAYS">
-            <padding>
-                <Insets top="40" right="40" bottom="40" left="40"/>
-            </padding>
+        <Region HBox.hgrow="ALWAYS" />
 
-            <!-- Верхній рядок: Назва теми + КНОПКИ НАВІГАЦІЇ -->
-            <HBox alignment="CENTER" spacing="20">
-                <!-- Кнопка Назад -->
-                <Button fx:id="prevTopicButton" text="⬅" onAction="#handlePreviousTopic"
-                        styleClass="next-topic-button"/>
+    </HBox>
 
-                <Label fx:id="topicLabel" text="Тема 1" styleClass="topic-title"/>
-
-                <!-- Кнопка Вперед -->
-                <Button fx:id="nextTopicButton" text="➡" onAction="#handleNextTopic"
-                        styleClass="next-topic-button"/>
-            </HBox>
-
-            <!-- Список уроків -->
-            <ScrollPane fitToWidth="true" fitToHeight="true"
-                        VBox.vgrow="ALWAYS"
-                        styleClass="lessons-scroll">
-                <VBox fx:id="lessonsList" alignment="TOP_CENTER" spacing="15">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                    <!-- Динамічні кнопки будуть додані HomeController.java -->
-                </VBox>
-            </ScrollPane>
-        </VBox>
-    </center>
-
-</BorderPane>
+</StackPane>

@@ -10,8 +10,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import qirim.app.Main;
 import qirim.app.model.LeaderboardEntry;
 import qirim.app.model.UserProgress;
 import qirim.app.services.DatabaseServices;
@@ -92,7 +94,6 @@ public class HomeController {
         originalCenterChildren = FXCollections.observableArrayList();
         originalCenterChildren.addAll(centerArea.getChildren());
 
-        // Налаштування таблиці лідерів (якщо елементи є в FXML)
         if (leaderboard != null && nameColumn != null && scoreColumn != null) {
             setupLeaderboard();
         }
@@ -179,19 +180,17 @@ public class HomeController {
         this.currentUserId = userId;
         logger.info("HomeController: currentUserId встановлено = " + userId);
 
-        // Перезавантажуємо дані користувача з новим ID
         if (userNameLabel != null || streakLabel != null || progressBar != null) {
             loadUserData();
         }
 
-        // Оновлюємо відображення уроків (показуємо завершені)
         if (!themesList.isEmpty()) {
             updateCenterContent(currentThemeIndex);
         }
     }
 
 
-        private List<Theme> loadThemesFromDB() {
+    private List<Theme> loadThemesFromDB() {
         List<Theme> loadedThemes = new ArrayList<>();
         String themesQuery = "SELECT theme_id, theme_name, theme_number FROM themes ORDER BY theme_number";
 
@@ -284,16 +283,18 @@ public class HomeController {
             for (Lesson lesson : currentTheme.lessons) {
                 Button lessonButton = new Button(lesson.title);
                 lessonButton.setPrefWidth(250);
-                lessonButton.getStyleClass().add("lesson-button");
 
                 try {
                     boolean completed = UserProgressService.isLessonCompleted(currentUserId, lesson.lessonId);
                     if (completed) {
                         lessonButton.setText(lesson.title + " ✓");
-                        lessonButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+                        lessonButton.getStyleClass().add("lesson-button-active");
+                    } else {
+                        lessonButton.getStyleClass().add("lesson-button-inactive");
                     }
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Не вдалося перевірити статус завершення уроку", e);
+                    lessonButton.getStyleClass().add("lesson-button-inactive");
                 }
 
                 lessonButton.setOnAction(this::openLesson);
@@ -329,11 +330,11 @@ public class HomeController {
             QuizController quizController = loader.getController();
             quizController.setLessonData(lessonId);
             quizController.setUserId(currentUserId);
-            quizController.setThemeIndex(currentThemeIndex); // ДОДАНО
+            quizController.setThemeIndex(currentThemeIndex);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setMaximized(true);
+            stage.setFullScreen(true);
             stage.show();
 
             logger.info("Користувач перейшов до тесту: " + selectedLesson.title +
@@ -354,9 +355,12 @@ public class HomeController {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/qirim/app/login.fxml")));
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
+
+            stage.setScene(new Scene(root));
+
+
             stage.show();
             stage.setMaximized(true);
-            stage.setScene(new Scene(root));
 
             logger.info("Користувач вийшов із системи");
         } catch (IOException e) {

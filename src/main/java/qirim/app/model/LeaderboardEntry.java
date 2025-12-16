@@ -1,8 +1,5 @@
 package qirim.app.model;
 
-/**
- * Модель для запису в таблиці лідерів (спрощена версія без JavaFX Properties)
- */
 public class LeaderboardEntry {
     private int rank;
     private String username;
@@ -19,7 +16,6 @@ public class LeaderboardEntry {
         this.currentStreak = currentStreak;
     }
 
-    // Getters
     public int getRank() {
         return rank;
     }
@@ -40,7 +36,6 @@ public class LeaderboardEntry {
         return currentStreak;
     }
 
-    // Setters
     public void setRank(int rank) {
         this.rank = rank;
     }
