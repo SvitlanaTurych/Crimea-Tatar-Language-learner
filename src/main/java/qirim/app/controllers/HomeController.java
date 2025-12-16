@@ -10,10 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import qirim.app.Main;
 import qirim.app.model.LeaderboardEntry;
 import qirim.app.model.UserProgress;
 import qirim.app.services.DatabaseServices;
@@ -141,7 +139,13 @@ public class HomeController {
 
             if (streakLabel != null) {
                 UserProgressService.UserStats stats = UserProgressService.getUserStats(currentUserId);
-                streakLabel.setText("🔥 " + stats.currentStreak + " днів");
+
+                if (stats.currentStreak > 0) {
+                    streakLabel.setText("🔥 " + stats.currentStreak + " " + getDaysWord(stats.currentStreak));
+
+                } else {
+                    streakLabel.setText("🔥 Почніть виконувати уроки!");
+                }
             }
 
             if (progressBar != null) {
@@ -156,19 +160,25 @@ public class HomeController {
         }
     }
 
+    private String getDaysWord(int days) {
+        if (days % 10 == 1 && days % 100 != 11) {
+            return "день";
+        } else if ((days % 10 >= 2 && days % 10 <= 4) && (days % 100 < 10 || days % 100 >= 20)) {
+            return "дні";
+        } else {
+            return "днів";
+        }
+    }
+
     private String getUsernameById(int userId) {
         String sql = "SELECT username FROM users WHERE id = ?";
-
         try (Connection conn = DatabaseServices.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getString("username");
             }
-
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Помилка при отриманні імені користувача", e);
         }
@@ -180,6 +190,8 @@ public class HomeController {
         this.currentUserId = userId;
         logger.info("HomeController: currentUserId встановлено = " + userId);
 
+        UserProgressService.checkAndResetStreakIfNeeded(userId);
+
         if (userNameLabel != null || streakLabel != null || progressBar != null) {
             loadUserData();
         }
@@ -188,7 +200,6 @@ public class HomeController {
             updateCenterContent(currentThemeIndex);
         }
     }
-
 
     private List<Theme> loadThemesFromDB() {
         List<Theme> loadedThemes = new ArrayList<>();
@@ -305,17 +316,6 @@ public class HomeController {
         }
     }
 
-    public void goBackToTopicList(ActionEvent event) {
-        updateCenterContent(currentThemeIndex);
-
-        if (userNameLabel != null || streakLabel != null || progressBar != null) {
-            loadUserData();
-        }
-        if (leaderboard != null) {
-            loadLeaderboardData();
-        }
-    }
-
     @FXML
     public void openLesson(ActionEvent event) {
         Button sourceButton = (Button) event.getSource();
@@ -355,19 +355,13 @@ public class HomeController {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/qirim/app/login.fxml")));
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
-
             stage.setScene(new Scene(root));
-
-
             stage.show();
-            stage.setMaximized(true);
+            stage.setFullScreen(true);
 
             logger.info("Користувач вийшов із системи");
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Помилка завантаження сторінки входу", e);
         }
     }
-
-    @FXML
-    private void openLogin() {}
-}
+} 

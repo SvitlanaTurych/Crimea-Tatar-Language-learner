@@ -14,6 +14,9 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +32,177 @@ public class LoginController {
     @FXML private TextField registerUsernameField;
     @FXML private PasswordField registerPasswordField;
     @FXML private TextField registerEmailField;
+    @FXML private Label passwordRequirementsLabel;
+    @FXML private Label emailRequirementsLabel;
+
+    // Константи для валідації
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final Pattern UPPERCASE_PATTERN = Pattern.compile("[A-Z]");
+    private static final Pattern LOWERCASE_PATTERN = Pattern.compile("[a-z]");
+    private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
+    );
+
+    // КОЛЬОРИ ДИЗАЙНУ (ВІДПОВІДАЮТЬ FXML)
+    private static final String STYLE_COLOR_SUCCESS = "#28a745";
+    private static final String STYLE_COLOR_ERROR_RAMKA = "#dc3545";
+    private static final String STYLE_COLOR_ACCENT = "#D4AF78";
+    private static final String STYLE_COLOR_INFO = "#FFFFFF";
+    private static final String STYLE_BACKGROUND_ERROR = "rgba(4, 49, 132, 0.9)";
+
+    // Базовий стиль для мітки повідомлень
+    private static final String BASE_MESSAGE_STYLE =
+            "-fx-font-size: 14px; " +
+                    "-fx-padding: 10px; " +
+                    "-fx-background-radius: 8px; " +
+                    "-fx-border-radius: 8px; " +
+                    "-fx-max-width: 450px; " +
+                    "-fx-alignment: center; ";
+
+    // Зберігаємо оригінальні стилі
+    private String originalPasswordStyle = "";
+    private String originalEmailStyle = "";
+
+    @FXML
+    public void initialize() {
+        if (registerPasswordField != null) {
+            originalPasswordStyle = registerPasswordField.getStyle();
+        }
+        if (registerEmailField != null) {
+            originalEmailStyle = registerEmailField.getStyle();
+        }
+
+        if (passwordRequirementsLabel != null) {
+            passwordRequirementsLabel.setText(
+                    "Вимоги до паролю:\n" +
+                            "• Мінімум 8 символів\n" +
+                            "• Велика літера (A-Z)\n" +
+                            "• Маленька літера (a-z)\n" +
+                            "• Цифра (0-9)"
+            );
+            passwordRequirementsLabel.setStyle("-fx-text-fill: " + STYLE_COLOR_INFO + "; -fx-font-size: 11px;");
+        }
+
+        if (emailRequirementsLabel != null) {
+            emailRequirementsLabel.setText("Приклад: user@example.com");
+            emailRequirementsLabel.setStyle("-fx-text-fill: " + STYLE_COLOR_INFO + "; -fx-font-size: 11px;");
+        }
+
+        if (registerPasswordField != null) {
+            registerPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.isEmpty()) {
+                    validatePasswordRealtime(newValue);
+                } else {
+                    registerPasswordField.setStyle(originalPasswordStyle);
+                }
+            });
+        }
+
+        if (registerEmailField != null) {
+            registerEmailField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.isEmpty()) {
+                    validateEmailRealtime(newValue);
+                } else {
+                    registerEmailField.setStyle(originalEmailStyle);
+                }
+            });
+        }
+    }
+
+    private List<String> validatePassword(String password) {
+        List<String> errors = new ArrayList<>();
+
+        if (password == null || password.isEmpty()) {
+            errors.add("Пароль не може бути порожнім");
+            return errors;
+        }
+
+        if (password.length() < MIN_PASSWORD_LENGTH) {
+            errors.add("Мінімум " + MIN_PASSWORD_LENGTH + " символів");
+        }
+
+        if (!UPPERCASE_PATTERN.matcher(password).find()) {
+            errors.add("Хоча б одна велика літера (A-Z)");
+        }
+
+        if (!LOWERCASE_PATTERN.matcher(password).find()) {
+            errors.add("Хоча б одна мала літера (a-z)");
+        }
+
+        if (!DIGIT_PATTERN.matcher(password).find()) {
+            errors.add("Хоча б одна цифра (0-9)");
+        }
+
+        return errors;
+    }
+
+    private List<String> validateEmail(String email) {
+        List<String> errors = new ArrayList<>();
+
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Email не може бути порожнім");
+            return errors;
+        }
+
+        email = email.trim().toLowerCase();
+
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            errors.add("Невірний формат email адреси");
+            return errors;
+        }
+
+        String[] parts = email.split("@");
+        if (parts.length != 2) {
+            errors.add("Email повинен містити рівно один символ @");
+            return errors;
+        }
+
+        String localPart = parts[0];
+        String domain = parts[1];
+
+        if (localPart.length() < 3) {
+            errors.add("Частина email до @ повинна містити мінімум 3 символи");
+        }
+
+        if (!domain.contains(".")) {
+            errors.add("Домен повинен містити крапку (наприклад: gmail.com)");
+        }
+
+        if (email.contains("..")) {
+            errors.add("Email не може містити дві крапки підряд");
+        }
+
+        return errors;
+    }
+
+    private void validatePasswordRealtime(String password) {
+        List<String> errors = validatePassword(password);
+
+        if (errors.isEmpty()) {
+            // Зелена рамка для успіху
+            registerPasswordField.setStyle(originalPasswordStyle +
+                    "-fx-border-color: " + STYLE_COLOR_SUCCESS + "; -fx-border-width: 3;");
+        } else {
+            // Червона рамка для помилки
+            registerPasswordField.setStyle(originalPasswordStyle +
+                    "-fx-border-color: " + STYLE_COLOR_ERROR_RAMKA + "; -fx-border-width: 3;");
+        }
+    }
+
+    private void validateEmailRealtime(String email) {
+        List<String> errors = validateEmail(email);
+
+        if (errors.isEmpty()) {
+            // Зелена рамка для успіху
+            registerEmailField.setStyle(originalEmailStyle +
+                    "-fx-border-color: " + STYLE_COLOR_SUCCESS + "; -fx-border-width: 3;");
+        } else {
+            // Червона рамка для помилки
+            registerEmailField.setStyle(originalEmailStyle +
+                    "-fx-border-color: " + STYLE_COLOR_ERROR_RAMKA + "; -fx-border-width: 3;");
+        }
+    }
 
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -37,11 +211,35 @@ public class LoginController {
     @FXML
     public void handleRegister() {
         String username = registerUsernameField.getText().trim().toLowerCase();
-        String password = registerPasswordField.getText().trim();
-        String email = registerEmailField.getText().trim();
+        String password = registerPasswordField.getText();
+        String email = registerEmailField.getText().trim().toLowerCase();
+        String errorMessage = "";
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            messageLabel.setText("⚠️ Заповніть усі обов'язкові поля!");
+            errorMessage = "Заповніть усі обов'язкові поля!";
+        } else {
+            List<String> emailErrors = validateEmail(email);
+            List<String> passwordErrors = validatePassword(password);
+
+            if (!emailErrors.isEmpty()) {
+                errorMessage += "Невірний email:\n- " + String.join("\n- ", emailErrors);
+            }
+
+            if (!passwordErrors.isEmpty()) {
+                if (!errorMessage.isEmpty()) errorMessage += "\n\n";
+                errorMessage += "Невірний пароль. Вимоги:\n- " + String.join("\n- ", passwordErrors);
+            }
+
+            if (username.length() < 3 && errorMessage.isEmpty()) {
+                errorMessage = "Ім'я користувача повинно містити мінімум 3 символи!";
+            }
+        }
+
+        if (!errorMessage.isEmpty()) {
+            messageLabel.setText(errorMessage);
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_ACCENT + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             return;
         }
 
@@ -54,7 +252,23 @@ public class LoginController {
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
-                messageLabel.setText("⚠️ Користувач з таким ім'ям вже існує!");
+                messageLabel.setText("Користувач з таким ім'ям вже існує!");
+                messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                        "-fx-text-fill: " + STYLE_COLOR_ACCENT + "; " +
+                        "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
+                return;
+            }
+
+            String checkEmailQuery = "SELECT email FROM users WHERE email = ?";
+            PreparedStatement checkEmailStmt = conn.prepareStatement(checkEmailQuery);
+            checkEmailStmt.setString(1, email);
+            ResultSet rsEmail = checkEmailStmt.executeQuery();
+
+            if (rsEmail.next()) {
+                messageLabel.setText("Користувач з таким email вже існує!");
+                messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                        "-fx-text-fill: " + STYLE_COLOR_ACCENT + "; " +
+                        "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
                 return;
             }
 
@@ -76,11 +290,26 @@ public class LoginController {
                 logger.info("Новий користувач зареєстрований: " + username + " (ID: " + newUserId + ")");
             }
 
-            messageLabel.setText("✅ Реєстрація успішна! Спробуйте увійти.");
-            openLogin();
+            messageLabel.setText("Реєстрація успішна! Спробуйте увійти.");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_SUCCESS + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";"); // Темний фон для успіху
+
+            registerUsernameField.clear();
+            registerPasswordField.clear();
+            registerEmailField.clear();
+            registerPasswordField.setStyle(originalPasswordStyle);
+            registerEmailField.setStyle(originalEmailStyle);
+
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
+            pause.setOnFinished(e -> openLogin());
+            pause.play();
 
         } catch (SQLException e) {
-            messageLabel.setText("❌ Помилка при реєстрації!");
+            messageLabel.setText("Помилка при реєстрації! Перевірте базу даних.");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_ERROR_RAMKA + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             logger.log(Level.SEVERE, "Помилка при реєстрації користувача", e);
         }
     }
@@ -88,10 +317,13 @@ public class LoginController {
     @FXML
     public void handleLogin(ActionEvent actionEvent) throws IOException {
         String processedUsername = loginUsernameField.getText().trim().toLowerCase();
-        String processedPassword = loginPasswordField.getText().trim();
+        String processedPassword = loginPasswordField.getText();
 
         if (processedUsername.isEmpty() || processedPassword.isEmpty()) {
-            messageLabel.setText("⚠️ Введіть логін та пароль!");
+            messageLabel.setText("Введіть логін та пароль!");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_ACCENT + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             return;
         }
 
@@ -99,6 +331,9 @@ public class LoginController {
 
         if (userId > 0) {
             messageLabel.setText("✅ Вхід успішний!");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_SUCCESS + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             logger.info("Користувач увійшов: " + processedUsername + " (ID: " + userId + ")");
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/qirim/app/home.fxml"));
@@ -110,11 +345,15 @@ public class LoginController {
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
+
+            stage.setFullScreen(true);
             stage.show();
-            stage.setMaximized(true);
 
         } else {
-            messageLabel.setText("❌ Невірний логін або пароль!");
+            messageLabel.setText("Невірний логін або пароль!");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_ACCENT + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             logger.warning("Невдала спроба входу: " + processedUsername);
         }
     }
@@ -136,7 +375,10 @@ public class LoginController {
             }
             return -1;
         } catch (SQLException e) {
-            messageLabel.setText("❌ Помилка підключення до бази!");
+            messageLabel.setText("Помилка підключення до бази!");
+            messageLabel.setStyle(BASE_MESSAGE_STYLE +
+                    "-fx-text-fill: " + STYLE_COLOR_ERROR_RAMKA + "; " +
+                    "-fx-background-color: " + STYLE_BACKGROUND_ERROR + ";");
             logger.log(Level.SEVERE, "Помилка при аутентифікації", e);
             return -1;
         }
@@ -157,6 +399,8 @@ public class LoginController {
         registerUsernameField.clear();
         registerPasswordField.clear();
         registerEmailField.clear();
+        registerPasswordField.setStyle(originalPasswordStyle);
+        registerEmailField.setStyle(originalEmailStyle);
         messageLabel.setText("");
         registerForm.setVisible(false);
         loginForm.setVisible(true);

@@ -4,6 +4,8 @@ import qirim.app.model.LeaderboardEntry;
 import qirim.app.model.UserProgress;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -160,6 +162,46 @@ public class UserProgressService {
         }
 
         return 0;
+    }
+
+    public static void checkAndResetStreakIfNeeded(int userId) {
+        try (Connection conn = DatabaseServices.getConnection()) {
+            LocalDate today = LocalDate.now();
+
+            String selectSql = "SELECT current_streak, last_activity_date FROM user_stats WHERE user_id = ?";
+
+            try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+                stmt.setInt(1, userId);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    int currentStreak = rs.getInt("current_streak");
+                    Date sqlDate = rs.getDate("last_activity_date");
+
+                    if (sqlDate != null && currentStreak > 0) {
+                        LocalDate lastActivityDate = sqlDate.toLocalDate();
+                        long daysBetween = ChronoUnit.DAYS.between(lastActivityDate, today);
+
+                        if (daysBetween > 1) {
+                            String updateSql = "UPDATE user_stats SET current_streak = 0 WHERE user_id = ?";
+                            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                                updateStmt.setInt(1, userId);
+                                updateStmt.executeUpdate();
+                                logger.info("Стрік скинуто для користувача " + userId + " через неактивність (" + daysBetween + " днів)");
+                            }
+
+                            String updateUserSql = "UPDATE users SET streak = 0 WHERE id = ?";
+                            try (PreparedStatement updateUserStmt = conn.prepareStatement(updateUserSql)) {
+                                updateUserStmt.setInt(1, userId);
+                                updateUserStmt.executeUpdate();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.WARNING, "Помилка при перевірці стріку", e);
+        }
     }
 
     public static class UserStats {

@@ -69,7 +69,6 @@ public class QuizController {
 
     @FXML
     public void initialize() {
-        // Ініціалізація виконується в setLessonData
     }
 
     public void setUserId(int userId) {
@@ -157,28 +156,22 @@ public class QuizController {
 
         Question question = quizQuestions.get(index);
 
-        // Оновити номер запитання
         questionNumberLabel.setText("Запитання " + (index + 1) + " з " + quizQuestions.size());
 
-        // Оновити текст запитання
         questionLabel.setText(question.text);
 
-        // Оновити бали
         scoreLabel.setText("Бали: " + calculateScore() + "/" + quizQuestions.size());
 
-        // Очистити попередні кнопки
         optionsGrid.getChildren().clear();
         optionButtons.clear();
         selectedOptionIndex = userAnswers.get(currentQuestionIndex);
 
-        // Створити кнопки для варіантів відповідей
         List<String> options = question.options;
         for (int i = 0; i < options.size(); i++) {
             final int optionIndex = i;
             Button optionButton = createOptionButton(options.get(i), optionIndex);
             optionButtons.add(optionButton);
 
-            // Розташувати в сітці 2x2
             int row = i / 2;
             int col = i % 2;
             optionsGrid.add(optionButton, col, row);
@@ -190,7 +183,6 @@ public class QuizController {
         button.setPrefWidth(400);
         button.setPrefHeight(60);
 
-        // Перевірити, чи цей варіант вже був вибраний
         if (userAnswers.get(currentQuestionIndex) == optionIndex) {
             button.setStyle(
                     "-fx-background-color: #D4AF78; " +
@@ -214,7 +206,6 @@ public class QuizController {
             );
         }
 
-        // Обробник вибору варіанта
         button.setOnAction(e -> selectOption(optionIndex));
 
         return button;
@@ -224,7 +215,6 @@ public class QuizController {
         selectedOptionIndex = optionIndex;
         userAnswers.set(currentQuestionIndex, optionIndex);
 
-        // Скинути стилі всіх кнопок
         for (int i = 0; i < optionButtons.size(); i++) {
             Button btn = optionButtons.get(i);
             btn.setStyle(
@@ -238,7 +228,6 @@ public class QuizController {
             );
         }
 
-        // Виділити вибрану кнопку
         Button selectedButton = optionButtons.get(optionIndex);
         selectedButton.setStyle(
                 "-fx-background-color: #D4AF78; " +
@@ -251,14 +240,12 @@ public class QuizController {
                         "-fx-cursor: hand;"
         );
 
-        // Оновити бали
         scoreLabel.setText("Бали: " + calculateScore() + "/" + quizQuestions.size());
     }
 
     @FXML
     private void handleNextQuestion(ActionEvent event) {
         if (selectedOptionIndex == -1) {
-            // Можна показати повідомлення, що треба вибрати відповідь
             return;
         }
 
@@ -270,7 +257,6 @@ public class QuizController {
             showIncorrectAnswer();
         }
 
-        // Затримка перед переходом до наступного запитання
         new Thread(() -> {
             try {
                 Thread.sleep(1000); // 1 секунда
@@ -304,7 +290,6 @@ public class QuizController {
     }
 
     private void showIncorrectAnswer() {
-        // Показати неправильну відповідь червоним
         Button incorrectButton = optionButtons.get(selectedOptionIndex);
         incorrectButton.setStyle(
                 "-fx-background-color: #F44336; " +
@@ -316,7 +301,6 @@ public class QuizController {
                         "-fx-font-weight: bold;"
         );
 
-        // Показати правильну відповідь зеленим
         Question currentQuestion = quizQuestions.get(currentQuestionIndex);
         Button correctButton = optionButtons.get(currentQuestion.correctAnswerIndex);
         correctButton.setStyle(
@@ -363,21 +347,18 @@ public class QuizController {
         int finalScore = calculateScore();
         double percentage = (double) finalScore / quizQuestions.size() * 100;
 
-        // Сховати запитання та варіанти
         questionNumberLabel.setVisible(false);
         questionLabel.setVisible(false);
         optionsGrid.setVisible(false);
         navigationHBox.setVisible(false);
 
-        // Показати результат
         resultMessageLabel.setText(
-                String.format("Тест завершено!\nВаш результат: %d з %d балів (%.0f%%)",
+                String.format("Тест завершено!%nВаш результат: %d з %d балів (%.0f%%)",
                         finalScore, quizQuestions.size(), percentage)
         );
         resultMessageLabel.setVisible(true);
         backToHomeButton.setVisible(true);
 
-        // Зберегти результат
         if (userId > 0) {
             try {
                 boolean saved = UserProgressService.saveTestResult(
@@ -418,8 +399,8 @@ public class QuizController {
 
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.show();
             stage.setFullScreen(true);
+            stage.show();
 
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Помилка завантаження home.fxml", e);
